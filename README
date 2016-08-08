@@ -1,15 +1,86 @@
 Minion-Command-minion-jobx
 
-The README is used to introduce the module and provide instructions on
-how to install the module, any machine dependencies it may have (for
-example C compilers and installed libraries) and any other information
-that should be provided before the module is installed.
+This module will work the same as Minion::Command::minion::job but with some differences.
 
-A README file is required for CPAN modules since CPAN extracts the README
-file from a module distribution so that people browsing the archive
-can use it to get an idea of the module's uses. It is usually a good idea
-to provide version information here so that people can decide whether
-fixes for the module are worth downloading.
+1) Display timestamps instead of epoch times.
+
+   {
+      "args" => [
+         "/some/path/to/some/file",
+         "/some/other/path/to/some/file"
+       ],
+       "attempts" => 1,
+       "children" => [],
+       "created" => "Wed Aug  3 15:05:00 2016",
+       "delayed" => "Wed Aug  3 15:05:00 2016",
+       "finished" => "Wed Aug  3 15:05:26 2016",
+       "id" => 1853,
+       "parents" => [
+          1852
+        ],
+        "priority" => 0,
+        "queue" => "default",
+        "result" => {
+           "output" => "done"
+        },
+        "retried" => undef,
+        "retries" => 0,
+        "started" => "Wed Aug  3 15:05:05 2016",
+        "state" => "finished",
+        "task" => "task_a",
+        "worker" => 108
+   }
+
+2) Add the "started" and "finished" times to the list of jobs.
+
+    1853  finished  default  [Wed Aug  3 15:05:05 2016]  [Wed Aug  3 15:05:26 2016]  task_a
+    1852  finished  default  [Wed Aug  3 15:05:00 2016]  [Wed Aug  3 15:05:00 2016]  task_a
+    1851  finished  default  [Wed Aug  3 14:56:08 2016]  [Wed Aug  3 14:56:09 2016]  task_b
+    1850  finished  default  [Wed Aug  3 14:51:06 2016]  [Wed Aug  3 14:56:07 2016]  task_b
+    1849  finished  default  [Wed Aug  3 14:51:01 2016]  [Wed Aug  3 14:51:02 2016]  task_b
+
+USAGE
+
+  Usage: APPLICATION minion jobx [OPTIONS] [ID]
+
+      ./myapp.pl minion jobx
+      ./myapp.pl minion jobx 10023
+      ./myapp.pl minion jobx -w
+      ./myapp.pl minion jobx -w 23
+      ./myapp.pl minion jobx -s
+      ./myapp.pl minion jobx -q important -t foo -S inactive
+      ./myapp.pl minion jobx -e foo -a '[23, "bar"]'
+      ./myapp.pl minion jobx -e foo -P 10023 -P 10024 -p 5 -q important
+      ./myapp.pl minion jobx -R -d 10 10023
+      ./myapp.pl minion jobx -r 10023
+
+    Options:
+      -A, --attempts <number>   Number of times performing this new job will be
+                                attempted, defaults to 1
+      -a, --args <JSON array>   Arguments for new job in JSON format
+      -d, --delay <seconds>     Delay new job for this many seconds
+      -e, --enqueue <name>      New job to be enqueued
+      -h, --help                Show this summary of available options
+      --home <path>             Path to home directory of your application,
+                                defaults to the value of MOJO_HOME or
+                                auto-detection
+      -l, --limit <number>      Number of jobs/workers to show when listing them,
+                                defaults to 100
+      -m, --mode <name>         Operating mode for your application, defaults to
+                                the value of MOJO_MODE/PLACK_ENV or "development"
+      -o, --offset <number>     Number of jobs/workers to skip when listing them,
+                                defaults to 0
+      -P, --parent <id>         One or more jobs the new job depends on
+      -p, --priority <number>   Priority of new job, defaults to 0
+      -q, --queue <name>        Queue to put new job in, defaults to "default", or
+                                list only jobs in this queue
+      -R, --retry               Retry job
+      -r, --remove              Remove job
+      -S, --state <state>       List only jobs in this state
+      -s, --stats               Show queue statistics
+      -t, --task <name>         List only jobs for this task
+      -w, --workers             List workers instead of jobs, or show information
+                                for a specific worker
 
 
 INSTALLATION

@@ -6,7 +6,7 @@ use Getopt::Long qw/GetOptionsFromArray :config no_auto_abbrev no_ignore_case/;
 use Mojo::JSON qw/decode_json/;
 use Mojo::Util qw/dumper tablify/;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 has description => 'Manage Minion jobs';
 has usage => sub { shift->extract_usage };

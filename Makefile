@@ -16,10 +16,11 @@
 #     BUILD_REQUIRES => { Test::More=>q[0] }
 #     CONFIGURE_REQUIRES => { ExtUtils::MakeMaker=>q[0] }
 #     LICENSE => q[artistic_2]
+#     META_MERGE => { resources=>{ repository=>{ web=>q[https://github.com/bfaist/Minion-Command-minion-jobx], url=>q[git://github.com/bfaist/Minion-Command-minion-jobx.git], type=>q[git] } }, meta-spec=>{ version=>q[2] } }
 #     MIN_PERL_VERSION => q[5.006]
 #     NAME => q[Minion::Command::minion::jobx]
 #     PL_FILES => {  }
-#     PREREQ_PM => { Test::More=>q[0] }
+#     PREREQ_PM => { Test::More=>q[0], Minion=>q[5], Mojolicious=>q[6] }
 #     TEST_REQUIRES => {  }
 #     VERSION_FROM => q[lib/Minion/Command/minion/jobx.pm]
 #     clean => { FILES=>q[Minion-Command-minion-jobx-*] }
@@ -62,11 +63,11 @@ DIRFILESEP = /
 DFSEP = $(DIRFILESEP)
 NAME = Minion::Command::minion::jobx
 NAME_SYM = Minion_Command_minion_jobx
-VERSION = 0.01
+VERSION = 0.02
 VERSION_MACRO = VERSION
-VERSION_SYM = 0_01
+VERSION_SYM = 0_02
 DEFINE_VERSION = -D$(VERSION_MACRO)=\"$(VERSION)\"
-XS_VERSION = 0.01
+XS_VERSION = 0.02
 XS_VERSION_MACRO = XS_VERSION
 XS_DEFINE_VERSION = -D$(XS_VERSION_MACRO)=\"$(XS_VERSION)\"
 INST_ARCHLIB = blib/arch
@@ -260,7 +261,7 @@ RCS_LABEL = rcs -Nv$(VERSION_SYM): -q
 DIST_CP = best
 DIST_DEFAULT = tardist
 DISTNAME = Minion-Command-minion-jobx
-DISTVNAME = Minion-Command-minion-jobx-0.01
+DISTVNAME = Minion-Command-minion-jobx-0.02
 
 
 # --- MakeMaker macro section:
@@ -778,6 +779,8 @@ ppd :
 	$(NOECHO) $(ECHO) '    <AUTHOR>Bob Faist &lt;bfaist@cpan.org&gt;</AUTHOR>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <IMPLEMENTATION>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <PERLCORE VERSION="5,006,0,0" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Minion::" VERSION="5" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Mojolicious::" VERSION="6" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <ARCHITECTURE NAME="x86_64-linux-thread-multi-5.16" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <CODEBASE HREF="" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    </IMPLEMENTATION>' >> $(DISTNAME).ppd
