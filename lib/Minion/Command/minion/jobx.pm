@@ -6,7 +6,7 @@ use Getopt::Long qw/GetOptionsFromArray :config no_auto_abbrev no_ignore_case/;
 use Mojo::JSON qw/decode_json/;
 use Mojo::Util qw/dumper tablify/;
 
-our $VERSION = '0.02';
+our $VERSION = '0.04';
 
 has description => 'Manage Minion jobs';
 has usage => sub { shift->extract_usage };
@@ -62,12 +62,13 @@ sub run {
 sub _list_jobs {
   my $jobs = shift->app->minion->backend->list_jobs(@_);
   my @job_rows;
+  push @job_rows, ['id','state','queue','created','started','finished','task'];
   foreach my $job (@$jobs) {
-      foreach my $key (qw/started finished/) {
+      foreach my $key (qw/created started finished/) {
          $job->{$key} = '[' .  localtime($job->{$key}) . ']' if defined($job->{$key});
          $job->{$key} = 'N/A' unless defined($job->{$key});
       }
-      push @job_rows, [$job->{id}, $job->{state}, $job->{queue}, $job->{started}, $job->{finished}, $job->{task}];
+      push @job_rows, [$job->{id}, $job->{state}, $job->{queue}, $job->{created}, $job->{started}, $job->{finished}, $job->{task}];
   }
   print tablify \@job_rows;
 }
@@ -129,15 +130,19 @@ This module will work the same as Minion::Command::minion::job but with some dif
         "worker" => 108
    }
 
-2) Add the "started" and "finished" times to the list of jobs.
+2) Add "created", "started" and "finished" times to the list of jobs.  Column headers included.
 
-    1853  finished  default  [Wed Aug  3 15:05:05 2016]  [Wed Aug  3 15:05:26 2016]  task_a
-    1852  finished  default  [Wed Aug  3 15:05:00 2016]  [Wed Aug  3 15:05:00 2016]  task_a
-    1851  finished  default  [Wed Aug  3 14:56:08 2016]  [Wed Aug  3 14:56:09 2016]  task_b
-    1850  finished  default  [Wed Aug  3 14:51:06 2016]  [Wed Aug  3 14:56:07 2016]  task_b
-    1849  finished  default  [Wed Aug  3 14:51:01 2016]  [Wed Aug  3 14:51:02 2016]  task_b
+    $./script/app minion jobx -l 5
+    id    state     queue    created                     started                     finished                    task
+    2507  finished  default  [Thu Aug 18 16:23:25 2016]  [Thu Aug 18 16:23:32 2016]  [Thu Aug 18 16:23:38 2016]  some_task
+    2506  finished  default  [Thu Aug 18 16:23:25 2016]  [Thu Aug 18 16:23:31 2016]  [Thu Aug 18 16:23:34 2016]  some_task
+    2505  finished  default  [Thu Aug 18 16:23:25 2016]  [Thu Aug 18 16:23:30 2016]  [Thu Aug 18 16:23:41 2016]  some_task
+    2504  finished  default  [Thu Aug 18 16:23:25 2016]  [Thu Aug 18 16:23:30 2016]  [Thu Aug 18 16:23:36 2016]  some_task
+    2503  finished  default  [Thu Aug 18 16:23:25 2016]  [Thu Aug 18 16:23:25 2016]  [Thu Aug 18 16:23:33 2016]  some_task
 
-  Usage: APPLICATION minion jobx [OPTIONS] [ID]
+=head1 USAGE
+
+    Usage: APPLICATION minion jobx [OPTIONS] [ID]
 
       ./myapp.pl minion jobx
       ./myapp.pl minion jobx 10023
@@ -207,6 +212,10 @@ L<Mojolicious::Command> and implements the following new ones.
   $job->run(@ARGV);
    
   Run this command.
+
+=head1 TO DO
+
+ - Allow command line option to let user pick which timestamps are included in the list of jobs
    
 =head1 SEE ALSO
  

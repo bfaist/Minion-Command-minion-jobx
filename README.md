@@ -1,45 +1,50 @@
-Minion-Command-minion-jobx
+# Minion-Command-minion-jobx
 
 This module will work the same as Minion::Command::minion::job but with some differences.
 
-1) Display timestamps instead of epoch times.
+## Features
 
-   {
-      "args" => [
-         "/some/path/to/some/file",
-         "/some/other/path/to/some/file"
-       ],
-       "attempts" => 1,
-       "children" => [],
-       "created" => "Wed Aug  3 15:05:00 2016",
-       "delayed" => "Wed Aug  3 15:05:00 2016",
-       "finished" => "Wed Aug  3 15:05:26 2016",
-       "id" => 1853,
-       "parents" => [
-          1852
-        ],
-        "priority" => 0,
-        "queue" => "default",
-        "result" => {
-           "output" => "done"
-        },
-        "retried" => undef,
-        "retries" => 0,
-        "started" => "Wed Aug  3 15:05:05 2016",
-        "state" => "finished",
-        "task" => "task_a",
-        "worker" => 108
-   }
+* Display timestamps instead of epoch times.
 
-2) Add the "started" and "finished" times to the list of jobs.
+	    $./script/app minion jobx 1853
+	    {
+	         "args" => [
+	            "/some/path/to/some/file",
+	            "/some/other/path/to/some/file"
+	          ],
+	          "attempts" => 1,
+	          "children" => [],
+	          "created" => "Wed Aug  3 15:05:00 2016",
+	          "delayed" => "Wed Aug  3 15:05:00 2016",
+	          "finished" => "Wed Aug  3 15:05:26 2016",
+	          "id" => 1853,
+	          "parents" => [
+	             1852
+	           ],
+	           "priority" => 0,
+	           "queue" => "default",
+	           "result" => {
+	              "output" => "done"
+	           },
+	           "retried" => undef,
+	           "retries" => 0,
+	           "started" => "Wed Aug  3 15:05:05 2016",
+	           "state" => "finished",
+	           "task" => "task_a",
+	           "worker" => 108
+	    }
+      
+* Add the "created", "started" and "finished" times to the list of jobs.  Also display column headings.
 
-    1853  finished  default  [Wed Aug  3 15:05:05 2016]  [Wed Aug  3 15:05:26 2016]  task_a
-    1852  finished  default  [Wed Aug  3 15:05:00 2016]  [Wed Aug  3 15:05:00 2016]  task_a
-    1851  finished  default  [Wed Aug  3 14:56:08 2016]  [Wed Aug  3 14:56:09 2016]  task_b
-    1850  finished  default  [Wed Aug  3 14:51:06 2016]  [Wed Aug  3 14:56:07 2016]  task_b
-    1849  finished  default  [Wed Aug  3 14:51:01 2016]  [Wed Aug  3 14:51:02 2016]  task_b
+	    $./script/app minion jobx -l 5
+	    id    state     queue    created                     started                     finished                    task
+	    2507  finished  default  [Thu Aug 18 16:23:25 2016]  [Thu Aug 18 16:23:32 2016]  [Thu Aug 18 16:23:38 2016]  some_task
+	    2506  finished  default  [Thu Aug 18 16:23:25 2016]  [Thu Aug 18 16:23:31 2016]  [Thu Aug 18 16:23:34 2016]  some_task
+	    2505  finished  default  [Thu Aug 18 16:23:25 2016]  [Thu Aug 18 16:23:30 2016]  [Thu Aug 18 16:23:41 2016]  some_task
+	    2504  finished  default  [Thu Aug 18 16:23:25 2016]  [Thu Aug 18 16:23:30 2016]  [Thu Aug 18 16:23:36 2016]  some_task
+	    2503  finished  default  [Thu Aug 18 16:23:25 2016]  [Thu Aug 18 16:23:25 2016]  [Thu Aug 18 16:23:33 2016]  some_task
 
-USAGE
+## USAGE
 
   Usage: APPLICATION minion jobx [OPTIONS] [ID]
 
@@ -83,7 +88,7 @@ USAGE
                                 for a specific worker
 
 
-INSTALLATION
+# INSTALLATION
 
 To install this module, run the following commands:
 
@@ -92,29 +97,15 @@ To install this module, run the following commands:
 	make test
 	make install
 
-SUPPORT AND DOCUMENTATION
+# SUPPORT AND DOCUMENTATION
 
 After installing, you can find documentation for this module with the
 perldoc command.
 
     perldoc Minion::Command::minion::jobx
 
-You can also look for information at:
 
-    RT, CPAN's request tracker (report bugs here)
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Minion-Command-minion-jobx
-
-    AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/Minion-Command-minion-jobx
-
-    CPAN Ratings
-        http://cpanratings.perl.org/d/Minion-Command-minion-jobx
-
-    Search CPAN
-        http://search.cpan.org/dist/Minion-Command-minion-jobx/
-
-
-LICENSE AND COPYRIGHT
+# LICENSE AND COPYRIGHT
 
 Copyright (C) 2016 Bob Faist
 
@@ -122,7 +113,7 @@ This program is free software; you can redistribute it and/or modify it
 under the terms of the the Artistic License (2.0). You may obtain a
 copy of the full license at:
 
-L<http://www.perlfoundation.org/artistic_license_2_0>
+(http://www.perlfoundation.org/artistic_license_2_0)
 
 Any use, modification, and distribution of the Standard or Modified
 Versions is governed by this Artistic License. By using, modifying or
@@ -153,4 +144,3 @@ YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
 CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
 CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
