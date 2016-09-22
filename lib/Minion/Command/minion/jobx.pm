@@ -6,7 +6,7 @@ use Getopt::Long qw/GetOptionsFromArray :config no_auto_abbrev no_ignore_case/;
 use Mojo::JSON qw/decode_json/;
 use Mojo::Util qw/dumper tablify/;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 has description => 'Manage Minion jobs';
 has usage => sub { shift->extract_usage };
@@ -16,28 +16,36 @@ sub run {
 
   my ($args, $options) = ([], {});
   GetOptionsFromArray \@args,
-        'A|attempts=i' => \$options->{attempts},
-        'a|args=s'     => sub { $args = decode_json($_[1]) },
-        'd|delay=i'    => \$options->{delay},
-        'e|enqueue=s'  => \my $enqueue,
-        'l|limit=i'    => \(my $limit          = 100),
-        'o|offset=i'   => \(my $offset         = 0),
-        'P|parent=s'   => ($options->{parents} = []),
-        'p|priority=i' => \$options->{priority},
-        'q|queue=s'    => \$options->{queue},
-        'R|retry'      => \my $retry,
-        'r|remove'     => \my $remove,
-        'S|state=s'    => \$options->{state},
-        's|stats'      => \my $stats,
-        't|task=s'     => \$options->{task},
-        'w|workers'    => \my $workers;
-  my $id = @args ? shift @args : undef;
+        'A|attempts=i'  => \$options->{attempts},
+        'a|args=s'      => sub { $args = decode_json($_[1]) },
+        'b|broadcast=s' => (\my $command),
+        'd|delay=i'     => \$options->{delay},
+        'e|enqueue=s'   => \my $enqueue,
+        'l|limit=i'     => \(my $limit          = 100),
+        'o|offset=i'    => \(my $offset         = 0),
+        'P|parent=s'    => ($options->{parents} = []),
+        'p|priority=i'  => \$options->{priority},
+        'q|queue=s'     => \$options->{queue},
+        'R|retry'       => \my $retry,
+        'r|remove'      => \my $remove,
+        'S|state=s'     => \$options->{state},
+        's|stats'       => \my $stats,
+        't|task=s'      => \$options->{task},
+        'w|workers'     => \my $workers;
+
+  # Worker remote control command
+  return $self->app->minion->backend->broadcast($command, $args, \@args)
+    if $command;
 
   # Enqueue
   return say $self->app->minion->enqueue($enqueue, $args, $options) if $enqueue;
 
-  # Show stats or list jobs/workers
+  # Show stats
   return $self->_stats if $stats;
+
+  # List jobs/workers
+  my $id = @args ? shift @args : undef;
+
   return $id ? $self->_worker($id) : $self->_list_workers($offset, $limit) if $workers;
   return $self->_list_jobs($offset, $limit, $options) unless defined $id;
   die "Job does not exist.\n" unless my $job = $self->app->minion->job($id);

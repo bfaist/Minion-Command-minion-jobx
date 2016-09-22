@@ -1,2 +1,6 @@
 *.tar.gz
 Makefile.old
+MYMETA.*
+Makefile
+blib
+pm_to_blib

@@ -14,3 +14,5 @@ Revision history for Minion-Command-minion-jobx
 0.04    2016-08-18
 	Fix documentation to match latest list of jobs
 
+0.05    2016-09-21
+	Make compatible with Minion 6.0
